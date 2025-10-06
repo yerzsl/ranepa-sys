@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RANEPA.SYSTEM</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        :root {
+            --primary: #dc2626;
+            --primary-dark: #b91c1c;
+            --primary-light: #fef2f2;
+            --bg-primary: #000000;
+            --bg-secondary: #111111;
+            --bg-card: #1a1a1a;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a0;
+            --border: #333333;
+            --shadow: 0 4px 20px rgba(220, 38, 38, 0.15);
+            --shadow-card: 0 8px 30px rgba(220, 38, 38, 0.1);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: var(--shadow); }
+            50% { box-shadow: 0 4px 30px rgba(220, 38, 38, 0.3); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-top: 10px;
+            animation: fadeInUp 0.6s ease-out 0.1s both;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary), #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .profile-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            margin-bottom: 25px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.7s ease-out 0.2s both;
+            transition: all 0.3s ease;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+
+        .profile-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(220, 38, 38, 0.2);
+        }
+
+        .avatar {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: white;
+            font-weight: 700;
+            border: 3px solid var(--bg-card);
+            box-shadow: 0 0 0 3px var(--primary);
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        .avatar:hover {
+            animation: pulse 0.5s ease, glow 2s infinite;
+        }
+
+        .user-name {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #ffffff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-department {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.1);
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--primary);
+            text-shadow: 0 2px 10px rgba(220, 38, 38, 0.3);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            font-weight: 500;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+            animation: fadeInUp 0.7s ease-out 0.3s both;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 38, 38, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .action-card:hover::before {
+            left: 100%;
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.2);
+            border-color: var(--primary);
+        }
+
+        .action-card:active {
+            transform: translateY(-2px) scale(1);
+        }
+
+        .action-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .action-card:hover .action-icon {
+            transform: scale(1.2);
+            animation: pulse 1s ease;
+        }
+
+        .action-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+        }
+
+        .action-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.3;
+            font-weight: 500;
+        }
+
+        .quick-actions {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border);
+            animation: fadeInUp 0.7s ease-out 0.4s both;
+        }
+
+        .section-title {
+            font-size: 17px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--text-primary);
+        }
+
+        .section-title::after {
+            content: '⚡';
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .action-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .action-item {
+            display: flex;
+            align-items: center;
+            padding: 18px;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 3px;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .action-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .action-item:hover {
+            background: #1f1f1f;
+            border-color: var(--primary);
+            transform: translateX(8px);
+            box-shadow: 0 5px 15px rgba(220, 38, 38, 0.1);
+        }
+
+        .action-item:active {
+            transform: translateX(4px);
+        }
+
+        .action-item-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            color: white;
+            font-size: 18px;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .action-item:hover .action-item-icon {
+            transform: scale(1.1) rotate(5deg);
+            animation: glow 2s infinite;
+        }
+
+        .action-item-content {
+            flex: 1;
+        }
+
+        .action-item-title {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: var(--text-primary);
+        }
+
+        .action-item-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .status-new { background: rgba(220, 38, 38, 0.1); color: var(--primary); border: 1px solid var(--primary); }
+        .status-accepted { background: rgba(34, 197, 94, 0.1); color: #22c55e; border: 1px solid #22c55e; }
+        .status-completed { background: rgba(59, 130, 246, 0.1); color: #3b82f6; border: 1px solid #3b82f6; }
+
+        .form-container {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 28px 24px;
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border);
+            animation: slideInRight 0.6s ease-out;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .form-textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(220, 38, 38, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            margin-top: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .text-center { text-align: center; }
+        .mb-20 { margin-bottom: 20px; }
+        .hidden { 
+            display: none; 
+            animation: fadeOut 0.3s ease-out;
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .applications-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .application-card {
+            background: var(--bg-card);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .application-card:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .application-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .application-id {
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .application-audience {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .application-problem {
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .application-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="mainScreen">
+        <div class="header">
+            <div class="logo">RANEPA.SYSTEM</div>
+            <div class="subtitle">Техническая поддержка</div>
+        </div>
+
+        <div class="profile-card">
+            <div class="avatar" id="userAvatar">ИИ</div>
+            <div class="user-name" id="userName">Загрузка...</div>
+            <div class="user-department" id="userDepartment">Загрузка...</div>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalApps">0</div>
+                    <div class="stat-label">Всего</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="activeApps">0</div>
+                    <div class="stat-label">Активные</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="completedApps">0</div>
+                    <div class="stat-label">Завершено</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-grid">
+            <div class="action-card" onclick="showCreateForm()">
+                <div class="action-icon">📝</div>
+                <div class="action-title">Новая заявка</div>
+                <div class="action-desc">Создать запрос на поддержку</div>
+            </div>
+            <div class="action-card" onclick="showMyApplications()">
+                <div class="action-icon">📋</div>
+                <div class="action-title">Мои заявки</div>
+                <div class="action-desc">История и статусы</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="section-title">Быстрые действия</div>
+            <div class="action-list">
+                <div class="action-item" onclick="showFAQ()">
+                    <div class="action-item-icon">❓</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">FAQ & Помощь</div>
+                        <div class="action-item-desc">Ответы на частые вопросы</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showEquipmentStats()">
+                    <div class="action-item-icon">📊</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">Статистика</div>
+                        <div class="action-item-desc">Аналитика оборудования</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showFeedback()">
+                    <div class="action-item-icon">💬</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">Обратная связь</div>
+                        <div class="action-item-desc">Предложения и вопросы</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="createForm" class="container hidden">
+        <div class="header">
+            <div class="logo">Новая заявка</div>
+            <div class="subtitle">Опишите вашу проблему</div>
+        </div>
+
+        <div class="form-container">
+            <div class="form-group">
+                <label class="form-label">Аудитория *</label>
+                <input type="text" id="audienceInput" class="form-input" placeholder="Например, 301" maxlength="10" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Тип помощи</label>
+                <select id="helpType" class="form-select">
+                    <option value="🔧 Помощь в очной форме">🔧 Помощь в очной форме</option>
+                    <option value="💻 Дистанционная помощь">💻 Дистанционная помощь</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Категория проблемы</label>
+                <select id="problemCategory" class="form-select" onchange="onCategoryChange()">
+                    <option value="💻 Компьютер">💻 Компьютер</option>
+                    <option value="🌐 Интернет">🌐 Интернет</option>
+                    <option value="🖨️ Принтер">🖨️ Принтер</option>
+                    <option value="📺 Проектор/Телевизор">📺 Проектор/Телевизор</option>
+                    <option value="⚙️ Программное обеспечение">⚙️ Программное обеспечение</option>
+                    <option value="🎤 Аудио">🎤 Аудио</option>
+                    <option value="❓ Другое">❓ Другое</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="subcategoryGroup" style="display: none;">
+                <label class="form-label">Тип проблемы</label>
+                <select id="problemSubcategory" class="form-select">
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Описание проблемы *</label>
+                <textarea id="problemDescription" class="form-textarea" placeholder="Подробно опишите проблему..." required></textarea>
+            </div>
+
+            <button class="btn-primary" onclick="submitApplication()" id="submitBtn">
+                <span id="submitText">📨 Отправить заявку</span>
+                <span id="submitLoading" class="hidden" style="display: inline-flex; align-items: center; justify-content: center;">
+                    <div class="loading" style="margin-right: 8px;"></div>
+                    Отправка...
+                </span>
+            </button>
+            <button class="btn-secondary" onclick="showMainScreen()">← Назад</button>
+        </div>
+    </div>
+
+    <div id="applicationsScreen" class="container hidden">
+        <div class="header">
+            <div class="logo">Мои заявки</div>
+            <div class="subtitle">История ваших обращений</div>
+        </div>
+
+        <div class="form-container">
+            <div id="applicationsList" class="applications-list">
+            </div>
+            <button class="btn-secondary" onclick="showMainScreen()" style="margin-top: 20px;">← На главную</button>
+        </div>
+    </div>
+
+    <div id="faqScreen" class="container hidden">
+        <div class="header">
+            <div class="logo">FAQ & Помощь</div>
+            <div class="subtitle">Часто задаваемые вопросы</div>
+        </div>
+
+        <div class="form-container">
+            <div class="action-list">
+                <div class="action-item" onclick="showFAQCategory('computer')">
+                    <div class="action-item-icon">💻</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">Проблемы с компьютером</div>
+                        <div class="action-item-desc">Не включается, медленная работа</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showFAQCategory('internet')">
+                    <div class="action-item-icon">🌐</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">Проблемы с интернетом</div>
+                        <div class="action-item-desc">Нет подключения, медленная скорость</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showFAQCategory('printer')">
+                    <div class="action-item-icon">🖨️</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">Проблемы с принтером</div>
+                        <div class="action-item-desc">Не печатает, замятие бумаги</div>
+                    </div>
+                </div>
+                <div class="action-item" onclick="showFAQCategory('projector')">
+                    <div class="action-item-icon">📺</div>
+                    <div class="action-item-content">
+                        <div class="action-item-title">Проблемы с проектором</div>
+                        <div class="action-item-desc">Нет изображения, нет звука</div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-secondary" onclick="showMainScreen()" style="margin-top: 20px;">← Назад</button>
+        </div>
+    </div>
+
+    <script>
+        const problemSubcategories = {
+            '💻 Компьютер': ['Не включается', 'Медленно работает', 'Синий экран', 'Перегревается', 'Другое'],
+            '🌐 Интернет': ['Нет подключения', 'Медленная скорость', 'Нестабильное соединение', 'Wi-Fi не работает', 'Другое'],
+            '🖨️ Принтер': ['Не печатает', 'Замятие бумаги', 'Бледная печать', 'Замена картриджа', 'Сканер не работает'],
+            '📺 Проектор/Телевизор': ['Нет изображения', 'Нет звука', 'Перегрев', 'Не включается', 'Другое'],
+            '⚙️ Программное обеспечение': ['Не устанавливается', 'Не запускается', 'Ошибка при работе', 'Требуется лицензия', 'Другое'],
+            '🎤 Аудио': ['Нет звука', 'Шумы/помехи', 'Не работают колонки', 'Проблемы с микрофоном', 'Другое']
+        };
+
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+
+        let currentUser = null;
+        let userApplications = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initApp();
+        });
+
+        async function initApp() {
+            try {
+                const telegramUser = tg.initDataUnsafe.user;
+                
+                if (!telegramUser) {
+                    showError('Не удалось получить данные пользователя');
+                    return;
+                }
+
+                currentUser = await registerUser(telegramUser);
+                
+                if (currentUser) {
+                    initUserProfile(currentUser);
+                    await loadUserStats();
+                    await loadUserApplications();
+                }
+            } catch (error) {
+                console.error('Ошибка инициализации:', error);
+                showError('Ошибка загрузки приложения');
+            }
+        }
+
+        async function registerUser(telegramUser) {
+            try {
+                const API_BASE = window.location.origin;
+                const response = await fetch(`${API_BASE}/api/register`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: telegramUser.id,
+                        first_name: telegramUser.first_name,
+                        last_name: telegramUser.last_name,
+                        username: telegramUser.username
+                    })
+                });
+
+                if (response.ok) {
+                    return await response.json();
+                } else {
+                    throw new Error('Ошибка регистрации');
+                }
+            } catch (error) {
+                console.error('Ошибка регистрации:', error);
+                return {
+                    user_id: telegramUser.id,
+                    user_name: [telegramUser.first_name, telegramUser.last_name].filter(Boolean).join(' ') || 'Пользователь',
+                    user_department: 'Отдел не указан'
+                };
+            }
+        }
+
+        function initUserProfile(user) {
+            const firstName = user.user_name.split(' ')[0] || '';
+            const lastName = user.user_name.split(' ')[1] || '';
+            const initials = (firstName.charAt(0) + (lastName ? lastName.charAt(0) : '')).toUpperCase() || 'TU';
+            document.getElementById('userAvatar').textContent = initials;
+            
+            document.getElementById('userName').textContent = user.user_name;
+            document.getElementById('userDepartment').textContent = user.user_department || 'Не указан';
+        }
+
+        async function loadUserStats() {
+            try {
+                if (!currentUser) return;
+
+                const API_BASE = window.location.origin;
+                const response = await fetch(`${API_BASE}/api/user-stats/${currentUser.user_id}`);
+                
+                if (response.ok) {
+                    const stats = await response.json();
+                    updateStatsDisplay(stats);
+                } else {
+                    updateStatsDisplay({
+                        total: userApplications.length,
+                        active: userApplications.filter(app => app.status === 'new' || app.status === 'accepted').length,
+                        completed: userApplications.filter(app => app.status === 'completed').length
+                    });
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки статистики:', error);
+                updateStatsDisplay({
+                    total: 0,
+                    active: 0,
+                    completed: 0
+                });
+            }
+        }
+
+        function updateStatsDisplay(stats) {
+            document.getElementById('totalApps').textContent = stats.total || 0;
+            document.getElementById('activeApps').textContent = stats.active || 0;
+            document.getElementById('completedApps').textContent = stats.completed || 0;
+        }
+
+        async function loadUserApplications() {
+            try {
+                if (!currentUser) return;
+
+                const API_BASE = window.location.origin;
+                const response = await fetch(`${API_BASE}/api/user-applications/${currentUser.user_id}`);
+                
+                if (response.ok) {
+                    userApplications = await response.json();
+                } else {
+                    userApplications = [];
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки заявок:', error);
+                userApplications = [];
+            }
+        }
+
+        function onCategoryChange() {
+            const category = document.getElementById('problemCategory').value;
+            const subcategoryGroup = document.getElementById('subcategoryGroup');
+            const subcategorySelect = document.getElementById('problemSubcategory');
+
+            if (problemSubcategories[category] && category !== '❓ Другое') {
+                subcategorySelect.innerHTML = '';
+                problemSubcategories[category].forEach(subcat => {
+                    const option = document.createElement('option');
+                    option.value = subcat;
+                    option.textContent = subcat;
+                    subcategorySelect.appendChild(option);
+                });
+                subcategoryGroup.style.display = 'block';
+            } else {
+                subcategoryGroup.style.display = 'none';
+            }
+        }
+
+        async function submitApplication() {
+            const audience = document.getElementById('audienceInput').value.trim();
+            const helpType = document.getElementById('helpType').value;
+            const problemCategory = document.getElementById('problemCategory').value;
+            const problemSubcategory = document.getElementById('problemSubcategory').value;
+            const description = document.getElementById('problemDescription').value.trim();
+
+            if (!audience || !description) {
+                showError('Заполните все обязательные поля');
+                return;
+            }
+
+            let problemText = problemCategory;
+            if (problemSubcategory && problemCategory !== '❓ Другое') {
+                problemText += `: ${problemSubcategory}`;
+            }
+            problemText += ` - ${description}`;
+
+            document.getElementById('submitText').classList.add('hidden');
+            document.getElementById('submitLoading').classList.remove('hidden');
+
+            try {
+                const API_BASE = window.location.origin;
+                const response = await fetch(`${API_BASE}/api/create-application`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: currentUser.user_id,
+                        audience: audience,
+                        problem: problemText,
+                        help_type: helpType
+                    })
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    
+                    tg.showPopup({
+                        title: '🎉 Успешно!',
+                        message: `Заявка #${result.application_id} создана!\nСпециалист свяжется с вами.`,
+                        buttons: [{ type: 'ok', text: 'Отлично' }]
+                    });
+
+                    await loadUserStats();
+                    await loadUserApplications();
+
+                    resetForm();
+                    showMainScreen();
+                    
+                } else {
+                    throw new Error('Ошибка создания заявки');
+                }
+            } catch (error) {
+                console.error('Ошибка отправки заявки:', error);
+                showError('Ошибка при создании заявки. Попробуйте еще раз.');
+            } finally {
+                document.getElementById('submitText').classList.remove('hidden');
+                document.getElementById('submitLoading').classList.add('hidden');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('audienceInput').value = '';
+            document.getElementById('problemDescription').value = '';
+            document.getElementById('problemCategory').selectedIndex = 0;
+            document.getElementById('subcategoryGroup').style.display = 'none';
+        }
+
+        function showMyApplications() {
+            document.getElementById('mainScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('applicationsScreen').classList.remove('hidden');
+                displayApplicationsList();
+            }, 50);
+        }
+
+        function displayApplicationsList() {
+            const container = document.getElementById('applicationsList');
+            
+            if (!userApplications || userApplications.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📋</div>
+                        <div>У вас пока нет заявок</div>
+                        <div style="margin-top: 8px; font-size: 14px;">Создайте первую заявку!</div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = userApplications.map(app => `
+                <div class="application-card">
+                    <div class="application-header">
+                        <div class="application-id">#${app.id}</div>
+                        <div class="application-audience">${app.audience}</div>
+                    </div>
+                    <div class="application-problem">${app.problem}</div>
+                    <div class="application-footer">
+                        <div class="status-badge status-${app.status}">
+                            ${getStatusText(app.status)}
+                        </div>
+                        <div>${formatDate(app.created_date)}</div>
+                    </div>
+                    ${app.specialist_name ? `<div style="margin-top: 8px; font-size: 12px; color: var(--text-secondary);">👨‍💼 ${app.specialist_name}</div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            const statusMap = {
+                'new': '🆕 Новая',
+                'accepted': '🛠️ В работе', 
+                'completed': '✅ Завершена',
+                'rejected': '❌ Отклонена'
+            };
+            return statusMap[status] || status;
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
+        function showFAQ() {
+            document.getElementById('mainScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('faqScreen').classList.remove('hidden');
+            }, 50);
+        }
+
+        function showFAQCategory(category) {
+            const faqData = {
+                computer: {
+                    title: '💻 Проблемы с компьютером',
+                    content: `• Не включается: Проверьте питание, кабели, кнопку включения\n• Медленная работа: Закройте лишние программы, перезагрузите компьютер  \n• Синий экран: Запишите код ошибки и сообщите специалисту\n• Перегревается: Обеспечьте вентиляцию, почистите от пыли`
+                },
+                internet: {
+                    title: '🌐 Проблемы с интернетом',
+                    content: `• Нет подключения: Проверьте кабель Wi-Fi, перезагрузите роутер\n• Медленная скорость: Закройте торренты, видео в HD качестве\n• Нестабильное соединение: Проверьте расположение роутера\n• Wi-Fi не работает: Переподключитесь к сети, проверьте пароль`
+                },
+                printer: {
+                    title: '🖨️ Проблемы с принтером',
+                    content: `• Не печатает: Проверьте бумагу, картриджи, подключение к сети\n• Замятие бумаги: Аккуратно извлеките бумагу по стрелке\n• Бледная печать: Замените картридж\n• Сканер не работает: Проверьте подключение, драйверы`
+                },
+                projector: {
+                    title: '📺 Проблемы с проектором',
+                    content: `• Нет изображения: Проверьте кабель HDMI/VGA, источник сигнала\n• Нет звука: Проверьте громкость, аудиокабель\n• Перегрев: Дайте остыть 30 минут\n• Не включается: Проверьте питание, пульт ДУ`
+                }
+            };
+
+            const data = faqData[category];
+            if (data) {
+                tg.showPopup({
+                    title: data.title,
+                    message: data.content,
+                    buttons: [{ type: 'ok', text: 'Понятно' }]
+                });
+            }
+        }
+
+        function showEquipmentStats() {
+            tg.showPopup({
+                title: '📊 Статистика оборудования',
+                message: 'Эта функция доступна специалистам в основном интерфейсе бота.',
+                buttons: [{ type: 'ok', text: 'Ясно' }]
+            });
+        }
+
+        function showFeedback() {
+            tg.showPopup({
+                title: '💬 Обратная связь',
+                message: 'По вопросам и предложениям обращайтесь в чат обратной связи.',
+                buttons: [{ type: 'ok', text: 'ОК' }]
+            });
+        }
+
+        function showMainScreen() {
+            document.querySelectorAll('.container').forEach(container => {
+                container.classList.add('hidden');
+            });
+            
+            setTimeout(() => {
+                document.getElementById('mainScreen').classList.remove('hidden');
+            }, 50);
+        }
+
+        function showCreateForm() {
+            document.getElementById('mainScreen').classList.add('hidden');
+            setTimeout(() => {
+                document.getElementById('createForm').classList.remove('hidden');
+            }, 50);
+        }
+
+        function showError(message) {
+            tg.showPopup({
+                title: '⚠️ Ошибка',
+                message: message,
+                buttons: [{ type: 'ok', text: 'Понятно' }]
+            });
+        }
+
+        tg.onEvent('themeChanged', function() {
+            if (tg.colorScheme === 'dark') {
+                document.documentElement.style.setProperty('--bg-primary', '#000000');
+                document.documentElement.style.setProperty('--bg-secondary', '#111111');
+            } else {
+                document.documentElement.style.setProperty('--bg-primary', '#ffffff');
+                document.documentElement.style.setProperty('--bg-secondary', '#f8f9fa');
+                document.documentElement.style.setProperty('--bg-card', '#ffffff');
+                document.documentElement.style.setProperty('--text-primary', '#1a1a1a');
+                document.documentElement.style.setProperty('--text-secondary', '#666666');
+                document.documentElement.style.setProperty('--border', '#e0e0e0');
+            }
+        });
+    </script>
+</body>
+</html>
